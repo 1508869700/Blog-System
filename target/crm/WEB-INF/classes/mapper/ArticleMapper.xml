@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XChen.dao.ArticleDao">
+  <select id="getFirst10Article" resultType="Article">
+    select * from article limit 10
+  </select>
+  <select id="getArticleById" resultType="Article">
+    select * from article where id = #{id}
+  </select>
+  <select id="getArticlesByCategoryName" parameterType="String" resultType="Article">
+    SELECT * FROM article WHERE category=#{category}
+  </select>
+
+  <insert id="writeBlog" parameterType="Article">
+    INSERT INTO article(title,content,summary,category) VALUES (#{title},#{content},#{summary},#{category})
+  </insert>
+
+  <select id="getCategories" resultType="Category">
+    select * from category;
+  </select>
+
+  <resultMap id="getComments" type="Comment">
+    <id property="id" column="id"/>
+    <result property="username" column="username"/>
+    <result property="date" column="date"/>
+    <result property="content" column="content"/>
+    <result property="forarticleid" column="forarticleid"/>
+  </resultMap>
+
+  <select id="findCommentsByArticleId" parameterType="Integer" resultMap="getComments">
+    select * from comments where forarticleid = #{forarticleid}
+  </select>
+
+  <insert id="saveComment" parameterType="Comment">
+    insert into comments(username,date,content,forarticleid) value(#{username},#{date},#{content},#{forarticleid})
+  </insert>
+
+  <delete id="deleteComment" parameterType="Integer">
+    delete from comments where id = #{id}
+  </delete>
+
+  <select id="findArticleidByCommentid" parameterType="Integer" resultType="Integer">
+    select forarticleid from comments where id = #{id}
+  </select>
+
+  <delete id="deleteArticleById" parameterType="Integer" >
+    delete from article where id = #{id}
+  </delete>
+
+  <update id="updateVisitByArticleId" parameterType="Integer">
+    update article set visit=visit+1 where id = #{id}
+  </update>
+
+  <insert id="addCategory" parameterType="Category">
+    insert into category(name) value(#{name})
+  </insert>
+
+</mapper>
